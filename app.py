@@ -85,7 +85,7 @@ def show_all_songs():
 def show_song(song_id):
     """return a specific song"""
 
-    # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
+    # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK    
     song = Song.query.get_or_404(song_id)
     return render_template('song.html', song=song)
 
@@ -112,12 +112,13 @@ def add_song_to_playlist(playlist_id):
     
     playlist = Playlist.query.get_or_404(playlist_id)
     form = NewSongForPlaylistForm()
-
+    # import pdb;
+    # pdb.set_trace()
     curr_on_playlist = [s.id for s in playlist.song_list]
     print(f"*********{curr_on_playlist}")
-    form.song.choices = (db.session.query(Song.id, Song.title)
+    form.song.choices = [(song.id, song.title) for song in (db.session.query(Song.id, Song.title)
                       .filter(Song.id.notin_(curr_on_playlist))
-                      .all())    
+                      .all())]    
 
     if form.validate_on_submit():
           new_playtlist_song = PlaylistSong(playlist_id=playlist_id, song_id=form.song.data)
